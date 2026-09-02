@@ -86,6 +86,8 @@ proxy-groups:
       - Example-Hysteria2
 
 rules:
+  - DOMAIN,ipv6.msftconnecttest.com,REJECT
+  - DOMAIN,ipv6.msftncsi.com,REJECT
   - GEOSITE,private,DIRECT
   - GEOIP,private,DIRECT,no-resolve
   - GEOSITE,cn,DIRECT
