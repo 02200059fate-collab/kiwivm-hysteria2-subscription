@@ -1,0 +1,54 @@
+mixed-port: 8080
+allow-lan: false
+mode: rule
+log-level: warning
+ipv6: false
+
+tun:
+  enable: true
+  stack: mixed
+  auto-route: true
+  auto-detect-interface: true
+  strict-route: true
+  dns-hijack:
+    - any:53
+
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+  fallback:
+    - https://1.1.1.1/dns-query#PROXY
+    - https://8.8.8.8/dns-query#PROXY
+
+proxies:
+  - name: Example-Hysteria2
+    type: hysteria2
+    server: "YOUR_SERVER_IP"
+    port: 443
+    password: "YOUR_HYSTERIA_AUTH"
+    sni: "YOUR_SERVER_IP"
+    skip-cert-verify: true
+    fingerprint: "YOUR_CERT_SHA256_FINGERPRINT"
+    alpn:
+      - h3
+
+proxy-groups:
+  - name: PROXY
+    type: select
+    proxies:
+      - Example-Hysteria2
+
+rules:
+  - GEOSITE,private,DIRECT
+  - GEOIP,private,DIRECT,no-resolve
+  - GEOSITE,cn,DIRECT
+  - GEOIP,cn,DIRECT,no-resolve
+  - MATCH,PROXY

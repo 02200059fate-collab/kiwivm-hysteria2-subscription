@@ -1,0 +1,31 @@
+[Unit]
+Description=Private KiwiVM usage subscription for Shadowrocket
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kiwisub
+Group=kiwisub
+ExecStart=/usr/bin/python3 /usr/local/lib/kiwivm-subscription/app.py
+Restart=on-failure
+RestartSec=5s
+UMask=0077
+StateDirectory=kiwivm-subscription
+StateDirectoryMode=0750
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target
