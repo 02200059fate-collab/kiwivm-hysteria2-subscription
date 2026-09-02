@@ -81,7 +81,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y --no-install-recommends \
   ca-certificates curl openssl python3 gpg debian-keyring \
-  debian-archive-keyring apt-transport-https
+  debian-archive-keyring apt-transport-https procps
 
 if [[ -z "$SERVER_IP" ]]; then
   SERVER_IP="$(curl -4fsSL --max-time 15 https://api.ipify.org || true)"
@@ -119,6 +119,20 @@ fi
 command -v hysteria >/dev/null || die "Hysteria installation failed"
 
 install -d -m 0750 -o hysteria -g hysteria /etc/hysteria
+
+if [[ ! -f /etc/hysteria/.kiwivm-rmem-max.before ]]; then
+  sysctl -n net.core.rmem_max > /etc/hysteria/.kiwivm-rmem-max.before
+fi
+if [[ ! -f /etc/hysteria/.kiwivm-wmem-max.before ]]; then
+  sysctl -n net.core.wmem_max > /etc/hysteria/.kiwivm-wmem-max.before
+fi
+cat >/etc/sysctl.d/90-hysteria2-performance.conf <<'EOF'
+net.core.rmem_max = 16777216
+net.core.wmem_max = 16777216
+EOF
+chmod 0644 /etc/sysctl.d/90-hysteria2-performance.conf
+sysctl -p /etc/sysctl.d/90-hysteria2-performance.conf >/dev/null
+
 hysteria cert \
   --host "$SERVER_IP" \
   --valid-for 87600h \
@@ -142,6 +156,12 @@ tls:
 auth:
   type: password
   password: ${AUTH_SECRET}
+
+outbounds:
+  - name: direct-ipv4
+    type: direct
+    direct:
+      mode: 4
 
 masquerade:
   type: string

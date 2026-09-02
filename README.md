@@ -6,7 +6,10 @@
 - 仅本机监听的 KiwiVM 流量查询服务；
 - Caddy HTTPS 私人订阅入口（TCP 443）；
 - Shadowrocket 节点名称中的剩余流量和重置日期；
-- Shadowrocket 与 Mihomo/Clash.Meta 的国内直连、其他流量走代理模板。
+- Shadowrocket 与 Mihomo/Clash.Meta 的国内直连、其他流量走代理模板；
+- Shadowrocket 代理 DoH、HTTPDNS 拦截与私网保护；
+- Mihomo GeoIP/GeoSite 数据自动更新；
+- Hysteria 2 官方建议的 Linux UDP 缓冲区上限和 IPv4 出站。
 
 项目**不包含任何可用节点、密码、API Key、私人订阅地址或第三方二进制文件**。
 
@@ -87,9 +90,18 @@ sudo cat /root/kiwivm-hysteria2-client/credentials.txt
 
 - `YOUR_SERVER_IP`
 - `YOUR_HYSTERIA_AUTH`
-- `YOUR_CERT_SHA256_FINGERPRINT`
+- 全零的 `fingerprint` 占位值（替换为安装程序生成的 SHA-256 指纹）
 
-模板默认开启 TUN、国内 IP/域名直连、其余流量走 `PROXY`。
+模板默认开启 TUN、国内 IP/域名直连、其余流量走 `PROXY`。GeoIP/GeoSite 数据来自
+[MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat)，客户端每 24 小时检查一次更新。
+
+## 分流与 DNS 设计
+
+- 国内域名和 IP 直连，不消耗 VPS 转发流量；未匹配的国外流量走 `PROXY`。
+- Shadowrocket 的国外 DNS 使用代理 DoH，直连域名允许使用系统 DNS，并拦截常见 App 内置 HTTPDNS。
+- 局域网、回环、链路本地和保留地址不进入隧道，避免影响打印机、路由器后台和热点登录页。
+- 模板只定义一个通用 `PROXY` 策略，不创建香港、日本等空策略组，适合单节点部署。
+- 不包含 MITM、证书安装或 URL 重写。
 
 ## 服务结构
 
@@ -154,8 +166,11 @@ sudo ./uninstall.sh --purge-hysteria
 - [Hysteria 2](https://github.com/apernet/hysteria)
 - [Caddy](https://github.com/caddyserver/caddy)
 - [ios_rule_script](https://github.com/blackmatrix7/ios_rule_script)（Shadowrocket 国内规则远程地址）
+- [LingJingMaster/Shadowrocket-Rules](https://github.com/LingJingMaster/Shadowrocket-Rules)（DNS 防泄漏与私网保护设计参考）
+- [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat)（Mihomo GeoIP/GeoSite 数据）
 
 本仓库不重新分发这些项目的二进制文件。
+详见 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)。
 
 ## License
 
