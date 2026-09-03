@@ -17,7 +17,8 @@ binaries.
 - Source: <https://github.com/blackmatrix7/ios_rule_script>
 - License: GPL-2.0
 - Use here: client configurations reference the upstream-hosted Shadowrocket
-  `ChinaMax` and `BlockHttpDNS` lists by URL. The lists are not redistributed.
+  `DouYin`, `ByteDance`, `ChinaIPsBGP`, `ChinaMax` and `BlockHttpDNS` lists by
+  URL. The lists are not redistributed.
 
 ## MetaCubeX/meta-rules-dat
 

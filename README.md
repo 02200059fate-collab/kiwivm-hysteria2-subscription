@@ -99,7 +99,8 @@ sudo cat /root/kiwivm-hysteria2-client/credentials.txt
 
 - 国内域名和 IP 直连，不消耗 VPS 转发流量；未匹配的国外流量走 `PROXY`。
 - Shadowrocket 的国外 DNS 使用代理 DoH，直连域名允许使用系统 DNS；常见 App 内置 HTTPDNS 走直连，避免微信等应用因拒绝 HTTPDNS 而出现消息延迟或内置网页打不开。
-- 抖音使用独立的 `DouYin` 规则强制直连；TikTok 不包含在这条规则中，仍按国外流量处理。
+- 抖音先匹配 `DouYin` 和完整 `ByteDance` 规则，再用精简的 `ChinaIPsBGP` 兜住 HTTPDNS 返回的国内 CDN IP；TikTok 不包含在这些国内直连规则中，仍按国外流量处理。
+- iPhone 实测播放抖音两分钟约有 60.7 MB 下载走直连，代理下载仅约 0.16 MB；该结果用于验证分流方向，不代表固定带宽或速度。
 - 局域网、回环、链路本地和保留地址不进入隧道，避免影响打印机、路由器后台和热点登录页。
 - Windows 的两个仅 IPv6 联网探测域名直接拒绝，避免无 IPv6 VPS 产生重复失败请求。
 - 模板只定义一个通用 `PROXY` 策略，不创建香港、日本等空策略组，适合单节点部署。
