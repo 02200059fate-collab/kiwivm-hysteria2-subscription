@@ -9,7 +9,7 @@ binaries.
 - Source: <https://github.com/LingJingMaster/Shadowrocket-Rules>
 - License: MIT
 - Use here: reference for Shadowrocket DNS leak prevention, private-network
-  exclusions, DNS hijacking and HTTPDNS blocking. Multi-region policy groups,
+  exclusions, DNS hijacking and HTTPDNS handling. Multi-region policy groups,
   banking rules, MITM and URL rewrites are intentionally not copied.
 
 ## blackmatrix7/ios_rule_script
